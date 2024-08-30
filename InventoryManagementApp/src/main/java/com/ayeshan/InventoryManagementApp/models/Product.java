@@ -14,7 +14,7 @@ public class Product {
 
     private String name;
     private String brand;
-    private String cateogary;
+    private String category;
     private double price;
 
     @Column(columnDefinition = "TEXT")
@@ -46,12 +46,12 @@ public class Product {
         this.brand = brand;
     }
 
-    public String getCateogary() {
-        return cateogary;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCateogary(String cateogary) {
-        this.cateogary = cateogary;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public double getPrice() {
