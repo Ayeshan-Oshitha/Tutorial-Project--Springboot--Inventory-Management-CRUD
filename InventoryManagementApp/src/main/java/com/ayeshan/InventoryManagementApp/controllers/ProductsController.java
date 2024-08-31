@@ -1,6 +1,7 @@
 package com.ayeshan.InventoryManagementApp.controllers;
 
 import com.ayeshan.InventoryManagementApp.models.Product;
+import com.ayeshan.InventoryManagementApp.models.ProductDto;
 import com.ayeshan.InventoryManagementApp.services.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,13 @@ public class ProductsController {
         model.addAttribute("products",products);
         return "products/index";
     }
+
+    @GetMapping("/create")
+    public String showCreatePage(Model model){
+        ProductDto productDto = new ProductDto();
+        model.addAttribute("productDto",productDto);
+        return "products/CreateProduct";
+    }
+
 
 }
