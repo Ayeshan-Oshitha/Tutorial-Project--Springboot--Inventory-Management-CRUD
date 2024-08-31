@@ -88,6 +88,7 @@ public class ProductsController {
         return "redirect:/products";
     }
 
+
     @GetMapping("/edit")
     public String showEditPage(
             Model model,
@@ -112,6 +113,62 @@ public class ProductsController {
             return "redirect:/products";
         }
         return "products/EditProduct";
+    }
+
+    @PostMapping("/edit")
+    public String updateProduct(
+            Model model,
+            @RequestParam int id,
+            @Valid @ModelAttribute ProductDto productDto,
+            BindingResult result
+    ) {
+
+        try{
+            Product product = repo.findById(id).get();
+            model.addAttribute("product", product);
+
+            if(result.hasErrors()){
+                return "products/EditProduct";
+            }
+
+            if(!productDto.getImageFile().isEmpty()){
+                //delete old image
+                String uploadDir = "InventoryManagementApp/src/main/resources/static/images/";
+                Path oldImagePath = Paths.get(uploadDir + product.getImageFileName());
+
+                try{
+                    Files.delete(oldImagePath);
+                }
+                catch (Exception ex) {
+                    System.out.println("Exception: " + ex.getMessage());
+                }
+
+                //Save new image File
+                MultipartFile image = productDto.getImageFile();
+                Date createAt = new Date();
+                String storageFileName = createAt.getTime() + "_" + image.getOriginalFilename();
+
+                try (InputStream inputStream = image.getInputStream()) {
+                    Files.copy(inputStream, Paths.get(uploadDir + storageFileName),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                product.setImageFileName(storageFileName);
+            }
+
+            product.setName(productDto.getName());
+            product.setBrand(productDto.getBrand());
+            product.setCategory(productDto.getCategory());
+            product.setPrice(productDto.getPrice());
+            product.setDescription(productDto.getDescription());
+
+            repo.save(product);
+        }
+        catch (Exception ex){
+            System.out.println("Exception: " + ex.getMessage());
+        }
+
+        return "redirect:/products";
     }
 
 }
